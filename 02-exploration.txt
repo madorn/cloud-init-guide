@@ -1,0 +1,72 @@
+
+# Boot a cirros instance
+nova boot --image cirros --flavor m1.summit myfirstmetainstance
+
+# View console-log
+nova console-log myfirstmetainstance
+
+# Get VNC console
+nova get-vnc-console myfirstmetainstance novnc
+
+# Open the URL in your browser.
+# username: cirros
+# password: cubswin:)
+#
+# To scroll up/down within the VNC console..
+# Windows/Linux: Shift + Page Up and Shift + Page Down
+# Macbook: Fn + Shift + Up and Fn + Shift + Down
+
+# List block devices
+sudo blkid
+
+# Mount config drive
+sudo mount /dev/sr0 /mnt
+
+# Examine contents of config drive
+cd /mnt/openstack/latest
+ls
+
+# Examine contents of meta_data.json
+cat meta_data.json
+
+# Examine contents of network_data.json
+cat network_data.json
+
+# Examine contents of vendor_data.json
+cat vendor_data.json
+
+# Clear the console
+clear
+
+# Observe the route to the Metadata service
+ip route
+
+# Query Metadata service
+curl http://169.254.169.254/openstack/latest/meta_data.json
+
+# From the command line interface, view the current quota
+nova quota-show
+
+# Update the server with a new key/value pair
+nova meta myfirstmetainstance set openstacksummit=austin
+
+# Fun Tip:  You can inject metadata at instnace boot by running the following
+# nova boot --image <your_image> --flavor <your_flavor> --meta=key1=value1 --meta=key2=value2 myinstance
+
+# From the instance, query the Metadata service again
+# You should now be able to see the newly injected metadata.
+curl http://169.254.169.254/openstack/latest/meta_data.json
+
+# Remove the key/value pair
+nova meta myfirstmetainstance delete openstacksummit=austin
+
+# From the instance, query the Metadata service again
+# You should now be able to see the newly injected metadata.
+curl http://169.254.169.254/openstack/latest/meta_data.json
+
+# Log out of instance
+exit
+
+######!!!From Your SSH Session!!!######
+# Delete the instance
+nova delete myfirstmetainstance

@@ -1,0 +1,80 @@
+
+# Create some files to inject
+cat > ~/textfile.txt <<EOF
+
+Welcome to OpenStack Summit Austin!
+
+EOF
+cat > ~/texas.txt <<EOF
+             |             | \
+             |             | |
+             |             | |
+             |             | |__
+             |             | __ \______
+             |             |/  \_____  |_________________
+             |  O                    \___________________/ \
+             |  \\*****;                                  \ \
+             |   \\***********;                            \ \
+ ____________|    \\************;;;;;;;;;;;;;;;;;           \ \
+ /____________|     \\*****   ***;                ;           | |
+ \                   \\***       *;                ;           \ \
+ |                   \\***  *  ***;________________;          | |
+  \_                  \\***    ****;;;;;;;;;;;;;;;;;;         | |
+    |_                 \\***********;;;;;;;;;;;;;;;;;;       _|_|
+      |                 \\*.***;*****;;;;;;;;;;;;;;;;;;    _/_/
+       \                 \\     ******;;;;;;;;;;;;;;;;;; _/_/
+        \  ____           \\           ;;;;;;;;;;;;;;;;;; /
+        |_/__/ \           \\                         / /
+                \           \\                      / /
+                 \           \\                 _ /_/
+                  \           \\               / /
+                    \          \\           _ / /
+                      \                     |  |
+                        \                  /  /
+                         |                /  /
+                           \             /  /
+                            |            \ \
+                              \          | |
+                                \_       | |
+                                   \_    | |
+                                      \__|/
+EOF
+# Boot an instance injecting files
+nova boot --image cirros --flavor m1.summit --file /home/cirros/textfile.txt=textfile.txt --file /home/cirros/texas.txt=texas.txt myfileinjectioninstance
+
+# List instances, notice status of instance
+nova list
+
+# Get VNC console
+nova get-vnc-console myfileinjectioninstance novnc
+
+# Open the URL in your browser.
+# username: cirros
+# password: cubswin:)
+
+# View files
+sudo cat textfile.txt
+sudo cat texas.txt
+
+# List block devices
+sudo blkid
+
+# Mount config drive
+sudo mount /dev/sr0 /mnt
+
+# Examine contents of config drive
+cd /mnt/openstack/content
+ls
+
+# Examine contents of first file
+cat 0000
+
+# Examine contents of the second file
+cat 0001
+
+# Log out of instance
+exit
+
+######!!!From Your SSH Session!!!######
+# Delete the instance
+nova delete myfileinjectioninstance

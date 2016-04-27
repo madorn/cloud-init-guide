@@ -1,0 +1,42 @@
+heat_template_version: 2013-05-23
+
+description: Test Template Showing Compatibility with Cloud-Init
+
+parameters:
+  ImageID:
+    type: string
+    description: Image used to boot a server
+  Flavor:
+    type: string
+    description: Flavor of server
+  NetID:
+    type: string
+    description: Network ID for the server
+  Key:
+    type: string
+    description: Keypair to inject into the server
+
+
+resources:
+  personal_config:
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        package_update: true
+        package_upgrade: true
+
+  server1:
+    type: OS::Nova::Server
+    properties:
+      name: "Test server"
+      image: { get_param: ImageID }
+      flavor: { get_param: Flavor }
+      key_name: { get_param: Key }
+      networks:
+      - network: { get_param: NetID }
+      user_data: { get_resource: personal_config }
+      user_data_format: RAW
+
+
+# To Create the Stack:
+# heat stack-create -f mystack.yml -P NetID=<net_id> -P ImageID=<image-id> -P Flavor=<flavor> -P Key=MyKey Cloud-Init-Stack-Test

@@ -1,0 +1,6 @@
+#cloud-config
+runcmd:
+  - >
+    ansible-pull -v -i hosts
+    -U <github_repo_url>
+    -o playbook.yml

@@ -1,0 +1,33 @@
+
+# Create a Nova keypair. Nova generates keypair, retains the public key, and returns the private key.
+nova keypair-add mykeypair > mykeypair.pem
+
+# Change private key permissions
+chmod 600 mykeypair.pem
+
+# Boot an instance with injected public key
+nova boot --image cirros --flavor m1.summit --key-name mykeypair mykeypairinstance
+
+# View console-log
+nova console-log mykeypairinstance
+
+# Get VNC console
+nova get-vnc-console mykeypairinstance novnc
+
+# Open the URL in your browser.
+# username: cirros
+# password: cubswin:)
+
+# From the instance, query the Metadata service.
+# You should be able to see the injected public key.
+curl 169.254.169.254/openstack/latest/meta_data.json
+
+# View the contents of the authorized_keys file
+cat /home/cirros/.ssh/authorized_keys
+
+# Log out of instance
+exit
+
+######!!!From Your SSH Session!!!######
+# Delete the instance
+nova delete mykeypairinstance

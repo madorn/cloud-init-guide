@@ -1,0 +1,60 @@
+
+# Create a cloud-config file to change the default user password.
+# http://bazaar.launchpad.net/~cloud-init-dev/cloud-init/trunk/view/head:/cloudinit/config/cc_set_passwords.py
+cat >> password-user-data <<EOF
+#cloud-config
+ssh_pwauth: True
+password: passw0rd
+chpasswd:
+  expire: False
+EOF
+
+# Boot an instance with the user-data
+nova boot --image ubuntu1604 --flavor m1.summit --user-data password-user-data mycloudconfiginstance
+
+# View the console log of the instance
+nova console-log mycloudconfiginstance
+
+# Get VNC console
+nova get-vnc-console mycloudconfiginstance novnc
+
+# Open the URL in your browser.
+# username: ubuntu
+# password: passw0rd
+
+# View the configuration file for cloud-init
+cat /etc/cloud/cloud.cfg
+
+# View the datasources file
+cat /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+
+# View the cloud-init log files
+cat /var/log/cloud-init.log
+
+# View all block devices
+sudo blkid
+
+# Mount the ConfigDrive
+sudo mount /dev/sr0 /mnt
+
+# List contents of the ConfigDrive
+ls /mnt/openstack/latest
+
+# View the meta-data
+cat /mnt/openstack/latest/meta_data.json | python3 -m json.tool
+
+# View the user-data.
+cat /mnt/openstack/latest/user_data
+
+# View the network-data
+cat /mnt/openstack/latest/network_data.json | python3 -m json.tool
+
+# View the vendor-data
+cat /mnt/openstack/latest/vendor_data.json | python3 -m json.tool
+
+# Log out of instance
+exit
+
+######!!!From Your SSH Session!!!######
+# Delete the instance
+nova delete mycloudconfiginstance

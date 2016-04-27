@@ -1,0 +1,61 @@
+
+# SSH into the server provided by the instructor
+ssh openstack@<provided_ip>
+password: openstack
+
+# Install Ubuntu Cloud Keyring and Repository Manager
+sudo apt-get install -y ubuntu-cloud-keyring software-properties-common
+
+# Install Ubuntu Cloud Archive repository for Liberty
+sudo add-apt-repository -y cloud-archive:liberty
+
+# Download the latest package index to ensure you get Liberty packages
+sudo apt-get update
+
+# Install OpenStack Client
+sudo apt-get -y install python-openstackclient
+
+# Create 'myuser' credentials
+mkdir ~/credentials
+
+cat >> ~/credentials/myuser<<EOF
+export OS_REGION_NAME=RegionOne
+export OS_PROJECT_NAME=myproject$MY_NODE_ID # Required for python-openstackclient
+export OS_TENANT_NAME=myproject$MY_NODE_ID # Required for python-keystoneclient (deprecated)
+export OS_USERNAME=myuser$MY_NODE_ID
+export OS_PASSWORD=mypassword
+export OS_AUTH_URL=http://$MY_PUBLIC_IP:5000/v2.0
+EOF
+
+# Source the myuser credentials
+source ~/credentials/myuser
+
+# Verify authentication by ensuring you can receive a token
+openstack token issue
+
+# List all images
+glance image-list
+
+# List all flavors
+nova flavor-list
+
+# Nova list
+nova list
+
+# List all available networks
+neutron net-list
+
+# Create a network
+neutron net-create private
+
+# Create a subnet
+neutron subnet-create --name private-subnet private --dns-nameserver 8.8.8.8 192.168.1.0/24
+
+# Create a router
+neutron router-create myrouter 
+
+# Add private-subnet to the router
+neutron router-interface-add myrouter private-subnet
+
+# Set gateway of router to public net
+neutron router-gateway-set myrouter public

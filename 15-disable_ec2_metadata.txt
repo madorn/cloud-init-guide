@@ -1,0 +1,3 @@
+#cloud-config
+# http://bazaar.launchpad.net/~cloud-init-dev/cloud-init/trunk/view/head:/cloudinit/config/cc_disable_ec2_metadata.py
+disable_ec2_metadata: true

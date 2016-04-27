@@ -1,0 +1,16 @@
+#cloud-config
+# http://bazaar.launchpad.net/~cloud-init-dev/cloud-init/trunk/view/head:/cloudinit/config/cc_write_files.py
+write_files:
+  - path: /test2.txt
+    content: |
+      # My new test2.txt file!
+ - path: /test.txt
+    encoding: base64
+    owner: ubuntu:ubuntu
+    permissions: '0644'
+    content: WW91J3ZlIGRpc2NvdmVyZWQgdGhlIHNlY3JldCEgQ29uZ3JhdHVsYXRpb25zISAgRW1haWwgbWF0dC5kb3JuQHJhY2tzcGFjZS5jb20hCg==
+  - path: /test3.txt
+    encoding: gzip
+    permissions: '0755'
+    content: !!binary |
+        H4sIAIDb/U8C/1NW1E/KzNMvzuBKTc7IV8hIzcnJVyjPL8pJ4QIA6N+MVxsAAAA=    

@@ -1,0 +1,45 @@
+#cloud-config
+# Specify specific modules you want to run.  This will override settings in /etc/cloud/cloud.cfg on the instance.
+# Also override default behavior of specific modules by specifiying a different frequency:
+#  - [scripts-user, always]
+#  - [bootcmd, once]
+# -  [write-files, instance]
+cloud_init_modules:
+ - seed_random
+ - bootcmd
+ - write-files
+ - growpart
+ - resizefs
+ - set_hostname
+ - update_hostname
+ - rsyslog
+ - users-groups
+ - ssh
+
+cloud_config_modules:
+#- disk_setup
+#- mounts
+#- ssh-import-id
+#- locale
+ - set-passwords
+ - grub-dpkg
+ - apt-pipelining
+ - apt-configure
+ - package-update-upgrade-install
+ - landscape
+ - timezone
+#- puppet
+#- chef
+#- salt-minion
+#- mcollective
+# - disable-ec2-metadata
+  - runcmd
+# - byobu
+
+cloud_final_modules:
+# - rightscale_userdata
+# - scripts-vendor
+# - scripts-per-once
+  - scripts-per-boot
+# - scripts-per-instance
+  - [scripts-user, always]

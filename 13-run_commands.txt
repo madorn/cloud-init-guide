@@ -1,0 +1,14 @@
+#cloud-config
+# bootcmd: runs immediately after network is up. runs always.
+# runcmd: runs once - during config stage (after init but before final)
+#
+# cloud-init-per once = run only one time.
+# cloud-init-per instance = run only if this specific instance has yet to run it.
+# cloud-init-per always = run on every boot.
+# http://bazaar.launchpad.net/~cloud-init-dev/cloud-init/trunk/view/head:/cloudinit/config/cc_bootcmd.py
+# http://bazaar.launchpad.net/~cloud-init-dev/cloud-init/trunk/view/head:/cloudinit/config/cc_runcmd.py
+bootcmd:
+ - echo 192.168.1.130 us.archive.ubuntu.com > /etc/hosts
+ - cloud-init-per always date | tee /date.txt
+runcmd:
+  - wget "http://training.rackspace.com" -O /tmp/index.html

@@ -1,0 +1,36 @@
+
+# Create a userdata script
+cat > ~/userdata.txt <<EOF
+#!/bin/sh
+echo "Hello World. The time is now \$(date -R)!" | tee /home/cirros/output.txt
+EOF
+
+# Boot an instance using userdata script
+nova boot --image cirros --flavor m1.summit --user-data userdata.txt myuserdatainstance
+
+# List instances, notice status of instance
+nova list
+
+# View console log of instance
+nova console-log myuserdatainstance
+
+# Get VNC console
+nova get-vnc-console myuserdatainstance novnc
+
+# Open the URL in your browser.
+# username: cirros
+# password: cubswin:)
+
+# View file
+sudo cat output.txt
+
+# From the instance, query the Metadata service.
+# You should be able to see the user data
+curl 169.254.169.254/openstack/latest/user_data
+
+# Log out of instance
+exit
+
+######!!!From Your SSH Session!!!######
+# Delete the instance
+nova delete myuserdatainstance

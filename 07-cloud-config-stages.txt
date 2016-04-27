@@ -1,0 +1,122 @@
+###Ubuntu 16.04 (systemd)
+
+Stage-1
+---------
+chkconfig cloud-init-local on 
+Before=shutdown.target multi-user.target cloud-config.target cloud-init.service
+After=local-fs.target systemd-journald.socket basic.target system.slice
+
+Stage-2
+---------
+chkconfig cloud-init on 
+Before=multi-user.target shutdown.target systemd-user-sessions.service cloud-config.target sshd-keygen.service ssh.service
+After=network-online.target basic.target cloud-init-local.service system.slice systemd-journald.socket local-fs.target
+
+Stage-3
+---------
+chkconfig cloud-config on
+Before=cloud-final.service multi-user.target shutdown.target
+After=systemd-journald.socket network-online.target syslog.target system.slice basic.target cloud-config.target
+
+Stage-4
+---------
+chkconfig cloud-final on 
+Before=multi-user.target shutdown.target
+After=rc-local.service network-online.target cloud-config.service basic.target system.slice systemd-journald.socket syslog.target
+
+
+###Ubuntu 14.04 (upstart)
+
+Stage-1
+---------
+/etc/init/cloud-init-local.conf
+start on mounted MOUNTPOINT=/
+
+Stage-2
+---------
+/etc/init/cloud-init.conf
+start on mounted MOUNTPOINT=/ and stopped cloud-init-nonet (After network is up)
+
+Stage-3
+---------
+/etc/init/cloud-config.conf
+tart on (filesystem and started rsyslog)
+
+Stage-4
+---------
+/etc/init/cloud-final.conf
+start on (stopped rc RUNLEVEL=[2345] and stopped cloud-config) (after rc.local)
+
+
+###Execute Cloud-Init Manually
+
+Stage-1
+---------
+cloud-init init --local
+
+Stage-2
+---------
+cloud-init init
+
+Stage-3
+---------
+cloud-init modules --mode=config
+
+Stage-4
+---------
+cloud-init modules --mode=final
+
+
+###Data Sources
+
+Stage-1
+---------
+NoCloud Data Source
+
+Look for local data here:
+/var/lib/cloud/seed/nocloud/{meta-data,user-data,network-data,vendor-data}
+
+If present, copy to /var/lib/cloud/instances/<instance_id>
+
+* Will also attempt to mount vfat or iso device with LABEL="cidata" (if attached)
+and copy data:
+mount /dev/sr0 (or /dev/sdb, etc) /tmp
+cp /tmp/{meta-data,user-data,network-data,vendor-data} /var/lib/cloud/instances/<instance_id>/*
+
+Stage-2
+---------
+cat /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+datasource_list: [ NoCloud, ConfigDrive, OpenNebula, Azure, AltCloud, OVF, MAAS, GCE, OpenStack, CloudSigma, Ec2, CloudStack, None ]
+
+* By default, first datasource listed is the priority. If metadata is discovered, it is ccopied to /var/lib/cloud/instances/<instance_id>/*
+
+* All python modules listed in init stage (/etc/cloud/cloud.cfg) will execute.
+
+Stage-3
+---------
+* All python modules listed in config stage (/etc/cloud/cloud.cfg) will execute.
+
+Stage-4
+---------
+* All python modules listed in final stage (/etc/cloud/cloud.cfg) will execute.
+
+###Cirros-init info
+
+Commands
+---------
+cirros-apply
+cirros-ds
+cirros-per
+cirros-query
+cirros-status
+cirros-userdata
+
+Data Source List
+------------------
+cat /etc/cirros-init/config
+
+
+Re-execute User-Data
+----------------------
+sudo rm -rf /var/lib/cirros/
+sudo cirros-userdata

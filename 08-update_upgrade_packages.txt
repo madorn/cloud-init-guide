@@ -1,0 +1,4 @@
+#cloud-config
+# http://bazaar.launchpad.net/~cloud-init-dev/cloud-init/trunk/view/head:/cloudinit/config/cc_package_update_upgrade_install.py
+package_update: true
+package_upgrade: true
