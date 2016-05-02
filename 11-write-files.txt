@@ -4,7 +4,7 @@ write_files:
   - path: /test2.txt
     content: |
       # My new test2.txt file!
- - path: /test.txt
+  - path: /test.txt
     encoding: base64
     owner: ubuntu:ubuntu
     permissions: '0644'
