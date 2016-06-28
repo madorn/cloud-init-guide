@@ -27,4 +27,4 @@ write_files:
     permissions: 0755
 
 runcmd:
-  - su -l stack screen -dm -S devstackinstall ./start.sh
+  - su -l stack ./start.sh
