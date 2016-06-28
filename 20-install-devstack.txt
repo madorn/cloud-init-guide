@@ -1,5 +1,3 @@
-###Install DevStack (Run Inside Screen)
-
 #cloud-config
 
 users:
